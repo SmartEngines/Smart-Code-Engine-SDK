@@ -1,4 +1,4 @@
-# Smart-Code-Engine SDK Overview
+# Smart Code Engine SDK Overview
 
 This is a collection of DEMO builds of Smart Code Engine SDK developed by Smart Engines. The SDK examples can be used to demonstrate the integration possibilities and understand the basic object recognition workflows.
 
@@ -15,7 +15,7 @@ This is a collection of DEMO builds of Smart Code Engine SDK developed by Smart 
     - [Container recognition](#container-recognition)
     - [Payment details recognition](#payment-details-recognition)
     - [Universal Pay](#universal-pay)
-    - [Licence plate recognition](#licence-plate-recognition)
+    - [License plate recognition](#license-plate-recognition)
     - [Code documentation](#code-documentation)   
     - [Exceptions](#exceptions)
     - [Factory methods and memory ownership](#factory-methods-and-memory-ownership)
@@ -28,7 +28,7 @@ This is a collection of DEMO builds of Smart Code Engine SDK developed by Smart 
 
 ## :warning: Personalized signature :warning:
 
-All Smart Code Engine SDK clients are required to use a personalized signature for starting a session. The signature is validated offline and locks to the copy of the native library, thus ensures that only an authorized client may use it. The signature is a string with 256 characters.
+Users are required to use a personalized signature for starting a session. The signature is validated offline and locks to the copy of the native library, thus ensures that only an authorized client may use it. The signature is a string with 256 characters.
 
 You will need to manually copy the signature string and pass it as an argument for the `SpawnSession()` method ([see item 6 below]). Do NOT keep the signature in any asset files, only inside code. If possible, clients are encouraged to keep the signature in a controlled server and load it into the application via a secure channel, to ensure that signature and the library are separated.
 
@@ -297,7 +297,7 @@ The attribute `encoding` of this field specifies which type of content it contai
 Common values are `utf8` and `base64`.
 
 There are three main scenarios for barcode recognition: `focused`, `anywhere` or `dummy`.
-The `focused` mode is designed to process barcodes using handheld camera recognition in videostream when the code occupies the significant area of the source image.
+The `focused` mode is designed to process barcodes using handheld camera recognition in video stream when the code occupies the significant area of the source image.
 The `anywhere` mode is designed to process barcodes on any image in any location. This is much more resource consuming operation. It can be used to process any image from the gallery.
 The `dummy` mode is mainly used when location of barcode is predefined.
 To enable the required mode set the corresponding session option:
@@ -378,7 +378,7 @@ settings->SetOption("bank_card.enabled", "true");
 There are three types of bank cards: `embossed`, `indent`, `freeform`.
 `embossed` defines bank cards with embossed data pattern.
 `indent` defines bank cards with intent-printed data pattern.
-`freeform` defines bank cards with flat-designed data pattern, where data of interestb may be located anywhere in the card.
+`freeform` defines bank cards with flat-designed data pattern, where data of interest may be located anywhere in the card.
 By default all these types are enabled.
 The types of recognized bank cards could be explicitly specified using the corresponding session option: 
 ```c++
@@ -400,7 +400,7 @@ For `freeform` bank cards the recognition result may contain the following list 
 - `iban` - IBAN number (according to [ISO 13616](https://www.iso.org/standard/41031.html))
 
 For this engine, there are two supported capture modes: `mobile` and `anywhere`.
-The capture mode determines where to find the bank card. `mobile` mode mostly addresses handheld camera recognition in videostream, while `anywhere` mode is suitable for scanned images, webcam images, and arbitrary placed bank cards.
+The capture mode determines where to find the bank card. `mobile` mode mostly addresses handheld camera recognition in video stream, while `anywhere` mode is suitable for scanned images, webcam images, and arbitrary placed bank cards.
 By default the `mobile` option is enabled.
 
 The set of bank card related options is presented in the table.
@@ -410,7 +410,6 @@ The set of bank card related options is presented in the table.
 | `bank_card.captureMode`                           | `"mobile"` or `"anywhere"`                  | `"mobile"`             | Specifies bank card detection mode         |
 | `bank_card.enableStoppers`                            | `"true"` or `"false"`                  | `"true"`             | Enables smart text fields stoppers         |
 | `bank_card.extractBankCardImages`                             | `"true"` or `"false"`                  | `"false"`             | Extracts rectified bank card image and stores it in the relevant `CodeObject`        |
-
 
 #### MRZ recognition
 The `mrz` engine recognizes MRZ on the given set of frames according to the ICAO specification [link](https://www.icao.int/publications/pages/publication.aspx?docnum=9303).
@@ -428,7 +427,7 @@ The `mrz` engine supports recognition of the following MRZ types.
 - ICAO 9303 MRZ TD1 subtype - Machine Readable Travel Document Type 1, 3 lines, 30 characters each
 - ICAO 9303 MRZ TD2 subtype - Machine Readable Travel Document Type 2, 2 lines, 36 characters each
 - MRZ-like zone on Bulgarian vehicle registration certificates, 3 lines, 30 characters each
-- MRZ-like zone on Swiss driving licence, 3 lines, 9 characters in the first line, 30 characters in the second and third lines
+- MRZ-like zone on Swiss driving license, 3 lines, 9 characters in the first line, 30 characters in the second and third lines
 - MRZ-like zone on Ecuador ID, 3 lines, 30 characters each
 - MRZ-like zone on French ID cards, 2 lines, 36 characters each
 - MRZ-like zone on Kenya ID, 3 lines, 30 characters each
@@ -490,7 +489,6 @@ settings->SetOption("container_recog.maxAllowedObjects", "max_number_of_objects"
 ```
 where `max_number_of_objects` is an integer value. By default the `max_number_of_objects` is set to `1`.
 
-
 #### Payment details recognition
 
 The `payment_details` engine recognizes payment details presented in the text form required to make a payment in the financial system of Russian Federation. 
@@ -514,8 +512,13 @@ settings->SetOption("payment_details.<type>.maxAllowedFields", "number");
 ```
 where `type` is the payment detail type and `number` is the number. By default the `number` is set to `3` for every supported type.
 
-For this engine, there are two supported capture modes: `mobile` and `anywhere`. `mobile` mode mostly addresses handheld camera recognition in videostream, where the target details occupy the most part of the image,  while `anywhere` mode is suitable for images of full page documents.
+For this engine, there are two supported capture modes: `mobile` and `anywhere`. `mobile` mode mostly addresses handheld camera recognition in video stream, where the target details occupy the most part of the image,  while `anywhere` mode is suitable for images of full page documents.
 By default the `mobile` option is enabled.
+
+Set the paiment details capture mode as follows:
+```c++
+settings->SetOption("payment_details.captureMode", "mobile");
+```
 
 #### Universal Pay
 
@@ -557,9 +560,10 @@ settings.SetOption("code_text_line.enabled", "true");
 settings.SetOption("code_text_line.phone_number.enabled", "true");
 settings.SetOption("code_text_line.card_number.enabled", "true");
 ```
+
 If an exception occurs when you try to use the Universal Pay options, check if they are available or contact us.
 
-#### Licence plate recognition
+#### License plate recognition
 
 The `license_plate` engine recognizes vehicle registration plates on the given set of frames.
 By default it is disabled. To enable it, set the corresponding session option:
