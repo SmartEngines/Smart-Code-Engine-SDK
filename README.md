@@ -2,46 +2,47 @@
 
 This is a collection of DEMO builds of Smart Code Engine SDK developed by Smart Engines. The SDK examples can be used to demonstrate the integration possibilities and understand the basic object recognition workflows.
 
-
-  * [:warning: Personalized signature :warning:](#warning-personalized-signature-warning)
-  * [Troubleshooting and help](#troubleshooting-and-help)
+  * [:warning: Personalized Signature :warning:](#warning-personalized-signature-warning)
+  * [Troubleshooting and Help](#troubleshooting-and-help)
   * [General Usage Workflow](#general-usage-workflow)
-  * [Smart Code Engine SDK Overview](#smart-code-engine-sdk-overview)
-    - [Header files, namespaces, and modules](#header-files-namespaces-and-modules)
-    - [Barcode recognition](#barcode-recognition)
-    - [Bank card recognition](#bank-card-recognition)
-    - [MRZ recognition](#mrz-recognition)
-    - [Codified text line recognition](#codified-text-line-recognition)
-    - [Container recognition](#container-recognition)
-    - [Payment details recognition](#payment-details-recognition)
+  * [Smart Code Engine SDK Description](#smart-code-engine-sdk-description)
+    - [Code Documentation](#code-documentation)
+    - [Header Files, Namespaces and Modules](#header-files-namespaces-and-modules)
+    - [Barcode Recognition](#barcode-recognition)
+    - [Bank Card Recognition](#bank-card-recognition)
+    - [MRZ Recognition](#mrz-recognition)
+    - [Codified Text Line Recognition](#codified-text-line-recognition)
+    - [Shipping Container Recognition](#shipping-container-recognition)
+    - [Payment Details Recognition](#payment-details-recognition)
     - [Universal Pay](#universal-pay)
-    - [License plate recognition](#license-plate-recognition)
-    - [Code documentation](#code-documentation)   
+    - [License Plate Recognition](#license-plate-recognition)
+    - [Factory Methods and Memory Ownership](#factory-methods-and-memory-ownership)
+    - [Session Options](#session-options)
+      - [Global Options](#global-options)
     - [Exceptions](#exceptions)
-    - [Factory methods and memory ownership](#factory-methods-and-memory-ownership)
-  * [Session options](#session-options)
-    - [Global options](#global-options)
-  * [Processing Feedback](#processing-feedback)
-  * [Java API Specifics](#java-api-specifics)
-    - [Object deallocation](#object-deallocation)
-    - [Feedback scope](#feedback-scope)
+    - [Processing Feedback](#processing-feedback)
+    - [Java API Specifics](#java-api-specifics)
+    - [Object Deallocation](#object-deallocation)
+    - [Feedback Scope](#feedback-scope)
+  * [PDF Recognition](#pdf-recognition)
+    
 
-## :warning: Personalized signature :warning:
+## :warning: Personalized Signature :warning:
 
 Users are required to use a personalized signature for starting a session. The signature is validated offline and locks to the copy of the native library, thus ensures that only an authorized client may use it. The signature is a string with 256 characters.
 
-You will need to manually copy the signature string and pass it as an argument for the `SpawnSession()` method ([see item 6 below]). Do NOT keep the signature in any asset files, only inside code. If possible, clients are encouraged to keep the signature in a controlled server and load it into the application via a secure channel, to ensure that signature and the library are separated.
+You will need to copy the signature string manually and pass it as an argument for the `SpawnSession()` method ([see item 6 below]). Do NOT keep the signature in any asset files, only inside code. If possible, clients are encouraged to keep the signature in a controlled server and load it into the application via a secure channel, to ensure that signature and the library are separated.
 
-## Troubleshooting and help
+## Troubleshooting and Help
 
 To resolve issue that you might be facing we recommend to do the following:
 
-* Carefully read in-code documentation in API and samples and documentation in .pdf and .html, including this document
-* Check out the code details / compilation flags etc. in the sample code and projects
-* Read exception messages if exception is thrown - it might contain usable information
+* Carefully read the in-code documentation in the API and the samples and the documentation in .pdf and .html, including this document.
+* Check out the code details / compilation flags etc. in the sample code and projects.
+* Read exception messages if an exception is thrown: it may contain useful information.
 
 But remember:
-* You are always welcome to ask for help at `support@smartengines.com` (or your sales manager's email) no matter what
+* You are always welcome to ask for help at `support@smartengines.com` (or your sales manager's email) no matter what.
 
 ## General Usage Workflow
 
@@ -58,7 +59,7 @@ But remember:
     CodeEngine engine = CodeEngine.CreateFromEmbeddedBundle(true);
     ```
 
-    Configuration process might take a while but it only needs to be performed once during the program lifetime. Configured `CodeEngine` is used to spawn CodeEngineSessions which have actual recognition methods.
+    Configuration process can take a while, but it only needs to be performed once during the program lifetime. Configured `CodeEngine` is used to spawn CodeEngineSessions which have actual recognition methods.
 
     The first parameter to the `CreateFromEmbeddedBundle()` method is a boolean flag for enabling lazy configuration (`true` by default). If lazy configuration is enabled, some of the internal structured will be allocated and initialized only when first needed. If you disable the lazy configuration, all the internal structures and components will be initialized in the `CreateFromEmbeddedBundle()` method.
 
@@ -103,7 +104,7 @@ But remember:
 
     See more about options in [Session Options](#session-options).
 
-5. Subclasses `CodeEngineWorkflowFeedback`, `CodeEngineVisualizationFeedback` and implement callbacks (not required):
+5. Subclass `CodeEngineWorkflowFeedback`, `CodeEngineVisualizationFeedback` and implement callbacks (not required):
 
     ```cpp
     // C++
@@ -216,9 +217,15 @@ But remember:
     }
     ```
 
-## Smart Code Engine SDK Overview
+## Smart Code Engine SDK Description
 
-#### Header files, namespaces, and modules
+### Code Documentation
+
+All classes and functions have useful Doxygen comments.
+Other out-of-code documentation is available at `doc` folder of your delivery.
+For complete compilable and runnable sample usage code and build scripts please see `samples` folder.
+
+### Header Files, Namespaces and Modules
 
 Common classes, such as Point, OcrString, Image, etc. are located within `se::common` namespace and are located within a `secommon` directory:
 
@@ -262,7 +269,7 @@ The same classes in Java API are located within `com.smartengines.code` module:
 import com.smartengines.code.*; // Import all se::code classes
 ```
 
-#### Barcode recognition
+### Barcode Recognition
 The `barcode` engine recognizes barcodes on the given set of frames.
 By default it is disabled. To enable it, set the corresponding session option:
 ```c++
@@ -276,13 +283,13 @@ To enable specific barcode symbology set the corresponding session option:
 settings->SetOption("barcode.<symbology>.enabled", "true");
 ```
 The full list of supported symbologies is the following:
-`CODABAR`, `CODE_39`, `CODE_93`, `CODE_128`, `EAN_8`, `EAN_13_UPC_A`, `ITF`, `UPC_E`, `AZTEC`, `PDF_417`, `QR_CODE`, `DATA_MATRIX`, `MICRO_QR`, `MICRO_PDF_417`.
+`CODABAR`, `CODE_39`, `CODE_93`, `CODE_128`, `EAN_8`, `EAN_13_UPC_A`, `ITF`, `UPC_E`, `AZTEC`, `PDF_417`, `QR_CODE`, `DATA_MATRIX`, `MICRO_QR`, `MICRO_PDF_417`, `GS1_DATABAR`.
 
 There is helpful shorthand to enable the commonly used set of barcodes: 
 ```c++
 settings->SetOption("barcode.COMMON.enabled", "true")
 ```
-It consists of the following list of symbologies: `CODABAR`, `CODE_39`, `CODE_93`, `CODE_128`, `EAN_8`, `EAN_13_UPC_A`, `ITF`, `UPC_E`, `AZTEC`, `PDF_417`, `QR_CODE`, `DATA_MATRIX`.
+It consists of the following list of symbologies: `CODABAR`, `CODE_39`, `CODE_93`, `CODE_128`, `EAN_8`, `EAN_13_UPC_A`, `ITF`, `UPC_E`, `AZTEC`, `PDF_417`, `QR_CODE`, `DATA_MATRIX`, `GS1_DATABAR`.
 
 To enable the full set of symbologies the `ALL` shorthand can be used:
 ```c++
@@ -343,7 +350,7 @@ Every preset contains its own set of fields to populate:
 
 The set of barcode related options is presented in the table.
 |                                   Option name |                           Value type   |           Default |                                  Descripti1on|
-|:----------------------------------------------|:--------------------------------------:|:-----------------:|----------------------------------------------|
+|----------------------------------------------|--------------------------------------|-----------------|----------------------------------------------|
 | `barcode.enabled`                             | `"true"` or `"false"`                  | false             | Enables/disables barcode recognition         |
 | `barcode.ALL.enabled`                         | `"true"` or `"false"`                  | false             | Enables all barcode symbologies              |
 | `barcode.COMMON.enabled`                      | `"true"` or `"false"`                  | false             | Enables common barcode symbologies           |
@@ -368,7 +375,7 @@ settings->SetOption("barcode.smartPaymentBarDecoding", "true");
 ```
 If the algorithm succeeded, `CodeField` `smart_payment_bar_decoding_result` containing the encoding name is added to the result and may be used in the `PAYMENT` preset instead of following the specification. The full list of supported encodings is the following: `UTF8`, `CP1251`, `KOI8_R`, `ISO8859_5`, `CP932`.
 
-#### Bank card recognition
+### Bank Card Recognition
 The `bank_card` engine recognizes bank cards on the given set of frames.
 By default it is disabled. To enable it, set the corresponding session option:
 ```c++
@@ -399,19 +406,14 @@ For `freeform` bank cards the recognition result may contain the following list 
 - `expiry_date` - Expiry date in format `MM/YY`
 - `iban` - IBAN number (according to [ISO 13616](https://www.iso.org/standard/41031.html))
 
-For this engine, there are two supported capture modes: `mobile` and `anywhere`.
-The capture mode determines where to find the bank card. `mobile` mode mostly addresses handheld camera recognition in video stream, while `anywhere` mode is suitable for scanned images, webcam images, and arbitrary placed bank cards.
-By default the `mobile` option is enabled.
-
 The set of bank card related options is presented in the table.
 |                                   Option name |                           Value type   |           Default |                                  Description|
-|:----------------------------------------------|:--------------------------------------:|:-----------------:|----------------------------------------------|
+|----------------------------------------------|--------------------------------------|-----------------|----------------------------------------------|
 | `bank_card.enabled`                           | `"true"` or `"false"`                  | false             | Enables/disables bank card recognition         |
-| `bank_card.captureMode`                           | `"mobile"` or `"anywhere"`                  | `"mobile"`             | Specifies bank card detection mode         |
 | `bank_card.enableStoppers`                            | `"true"` or `"false"`                  | `"true"`             | Enables smart text fields stoppers         |
 | `bank_card.extractBankCardImages`                             | `"true"` or `"false"`                  | `"false"`             | Extracts rectified bank card image and stores it in the relevant `CodeObject`        |
 
-#### MRZ recognition
+### MRZ Recognition
 The `mrz` engine recognizes MRZ on the given set of frames according to the ICAO specification [link](https://www.icao.int/publications/pages/publication.aspx?docnum=9303).
 By default it is disabled. To enable it, set the corresponding session option:
 ```c++
@@ -436,7 +438,7 @@ The `mrz` engine supports recognition of the following MRZ types.
 
 Depending on the MRZ type, the recognition result contain a subset of code fields of the following names: `mrz_doc_type_code`, `mrz_number`, `mrz_issuer`, `mrz_proprietor`, `mrz_vehicle_number`, `mrz_line1`, `mrz_line2`, `mrz_line3`, `full_mrz`, `mrz_vin`, `mrz_id_number`, `mrz_cd_number`, `mrz_cd_bgrvrd_1`, `mrz_cd_bgrvrd_2`, `mrz_birth_date`, `mrz_name`, `mrz_nationality`, `mrz_opt_data_1`, `mrz_opt_data_2`, `mrz_last_name`, `mrz_gender`, `mrz_expiry_date`, `mrz_issue_date`, `photo`, `mrz_cd_birth_date`, `mrz_cd_composite`, `mrz_cd_expiry_date`, `mrz_cd_opt_data_2`, `mrz_authority_code`, `mrz_id_visa`, `mrz_invitation_number`, `mrz_cd_name`, `mrz_cd_invitation_number`, `mrz_cd_id_visa`, `mrz_first_name`, `mrz_cd_issue_date`,`mrz_cd_composit`.
 
-#### Codified text line recognition
+### Codified Text Line Recognition
 The `code_text_line` engine recognizes codified text lines, i.e. the lines with preset content.
 By default it is disabled. To enable it, set the corresponding session option:
 ```c++
@@ -444,7 +446,7 @@ settings->SetOption("code_text_line.enabled", "true");
 ```
 
 The full list of supported types is the following:
- - `phone_number`: specialized for mobile phone numbers in Russian Federation. Supported phone numbers should starting from [`"7"`, `"8"`] and consist of ABC code [`"3XX"`, `"4XX"`, `"7XX"`, `"8XX"`] or DEF code [`"9XX"`]. The numbers which are started from DEF code (10 digits) are also supported. Both printed and handwritten text lines are supported.
+- `phone_number`: specialized for mobile phone numbers in Russian Federation. Supported phone numbers - starting from [`"7"`, `"8"`] and consist of ABC code [`"3XX"`, `"4XX"`, `"7XX"`, `"8XX"`] or DEF code [`"9XX"`]. The numbers which start from DEF code (10 digits) are also supported. Both printed and handwritten text lines are supported.
  - `phone_number_cis`: specialized for mobile phone numbers in CIS countries (Commonwealth of Independent States). Supported phone numbers should starting from country code [`"7"`, `"8"`, `"373"`, `"374"`, `"375"`, `"992"`, `"993"`, `"994"`, `"995"`, `"996"`, `"997"`, `"998"`]. The Russian Federation mobile phone numbers which are started from DEF code `"9XX"` (10 digits) are also supported. Both printed and handwritten text lines are supported, including the ones written in several text lines.
  - `card_number`: card number recognition. Both printed and handwritten text lines are supported, including the ones written in several text lines.
  - `inn`: Taxpayer identification number in the legal system of Russian Federation.
@@ -452,7 +454,8 @@ The full list of supported types is the following:
  - `rcbic`: Bank identification code in the financial system of Russian Federation.
  - `iban`: IBAN number (according to [ISO 13616](https://www.iso.org/standard/41031.html))
  - `vin`: Vehicle Identification Number (17 symbols). Only the printed VINs are supported.
- - `meters`: Reading of consumption data from water meters or energy meters (gas, electric). Both analog and digital meters in any orientation are supported.
+ - `meters`: Reading of consumption data from water meters or energy meters (gas, electric). Both analog and digital meters in any orientation are supported;
+ - `container_seal_number`: Recognizing container seal numbers.
 
 By default these types are disabled.
 
@@ -467,29 +470,30 @@ The engine is able to simultaneously recognize several objects, regardless of th
 ```c++
 settings->SetOption("code_text_line.maxAllowedObjects", "max_number_of_objects");
 ```
-where `max_number_of_objects` is an integer value. By default the `max_number_of_objects` is set to `3`.
+where `max_number_of_objects` is an integer value. By default the `max_number_of_objects` is set to `1`.
 
 This engine can recognize both printed and handwritten text lines.
 
 :warning: To increase recognition performance a region of interest for text line may be provided. Particularly, the text line should occupy at least one third of the given region of interest in the area.
 
-#### Container recognition
-The `container_recog` engine recognizes the identification number of intermodal (shipping) container. 
+### Shipping Container Recognition
+The `shipping_container` engine recognizes the identification number of shipping container. 
 
 By default it is disabled. To enable it, set the corresponding session option:
 ```c++
-settings->SetOption("container_recog.enabled", "true");
+settings->SetOption("shipping_container.enabled", "true");
 ```
 
 The recognition result contain the following fields: `owner`, `number`, `control_digit`, `size_type`, `container_number`. The `container_number` is presented only if `owner`, `number` and `control_digit` are validated according to the ISO 6346 validation algorithm.
 
 The engine is able to simultaneously recognize several objects, regardless of the enabled types. To specify the maximum number of objects in the result:
 ```c++
-settings->SetOption("container_recog.maxAllowedObjects", "max_number_of_objects");
+settings->SetOption("shipping_container.maxAllowedObjects", "max_number_of_objects");
 ```
 where `max_number_of_objects` is an integer value. By default the `max_number_of_objects` is set to `1`.
 
-#### Payment details recognition
+
+### Payment Details Recognition
 
 The `payment_details` engine recognizes payment details presented in the text form required to make a payment in the financial system of Russian Federation. 
 By default it is disabled. To enable it, set the corresponding session option:
@@ -515,12 +519,12 @@ where `type` is the payment detail type and `number` is the number. By default t
 For this engine, there are two supported capture modes: `mobile` and `anywhere`. `mobile` mode mostly addresses handheld camera recognition in video stream, where the target details occupy the most part of the image,  while `anywhere` mode is suitable for images of full page documents.
 By default the `mobile` option is enabled.
 
-Set the paiment details capture mode as follows:
+Set the payment details capture mode as follows:
 ```c++
 settings->SetOption("payment_details.captureMode", "mobile");
 ```
 
-#### Universal Pay
+### Universal Pay
 
 The **Universal Pay** technology used in Code Engine allows you to recognize objects in a payment document without specifying the type.
 Supported objects:
@@ -561,56 +565,73 @@ settings.SetOption("code_text_line.phone_number.enabled", "true");
 settings.SetOption("code_text_line.card_number.enabled", "true");
 ```
 
+There exist an opportunity to put into the result all the barcodes presented in a sequence of images during the session processing, even those for which it is not possible to make a payment. To achieve that, one should specify the following option:
+```c++
+settings->SetOption("global.universalPay.collectNonPaymentBarcodes", "true");
+```
+
+```java
+settings.SetOption("global.universalPay.collectNonPaymentBarcodes", "true");
+```
+
+
 If an exception occurs when you try to use the Universal Pay options, check if they are available or contact us.
 
-#### License plate recognition
+### License Plate Recognition
 
 The `license_plate` engine recognizes vehicle registration plates on the given set of frames.
 By default it is disabled. To enable it, set the corresponding session option:
+
 ```c++
 settings->SetOption("license_plate.enabled", "true");
 ```
-The system supports license plate recognition for multiple countries. Country-specific recognition can be enabled in the settings as needed. By default all countries are disabled. 
-```c++
-settings->SetOption("license_plate.COUNTRY_CODE.enabled", "true");
+
+```Java
+settings.SetOption("license_plate.enabled", "true");
 ```
-List of supported countries and their codes in the system is presented in the table.
-|                                   Country  |                           Country Code   |
-|:-------------------------------------------|:----------------------------------------:|
-| `Armenia`                                  | `arm`                                    |
-| `Azerbaijan`                               | `aze`                                    |
-| `Belarus`                                  | `blr`                                    |
-| `Georgia`                                  | `geo`                                    |
-| `Germany`                                  | `deu`                                    |
-| `France`                                   | `fra`                                    |
-| `Kazakhstan`                               | `kaz`                                    |
-| `Kyrgyzstan`                               | `kgz`                                    |
-| `Moldova`                                  | `mda`                                    |
-| `Russian Federation`                       | `rus`                                    |
-| `Tajikistan`                               | `tjk`                                    |
-| `Uzbekistan`                               | `uzb`                                    |
- 
 
-#### Code documentation
+The system supports license plate recognition for multiple countries. Country-specific recognition can be enabled in the settings as needed. By default all countries are disabled. Enable it as follows:
 
-All classes and functions have useful Doxygen comments.
-Other out-of-code documentation is available at `doc` folder of your delivery.
-For complete compilable and runnable sample usage code and build scripts please see `samples` folder.
+```c++
+settings->SetOption("license_plate.<code>.enabled", "true");
+```
 
-#### Exceptions
+```Java
+settings.SetOption("license_plate.<code>.enabled", "true");
+```
 
-Our C++ API may throw `se::common::BaseException` subclasses when user passes invalid input, makes bad state calls or if something else goes wrong. Most exceptions contain useful human-readable information. Please read `e.what()` message if exception is thrown. Note that `se::common::BaseException` is **not** a subclass of `std::exception`, an Smart Code Engine interface in general do not have any dependency on the STL.
+Where `code` is the country code.
 
-The thrown exceptions are wrapped in general `java.lang.Exception`, so in Java API do catch those.
+For some countries the auto selection mode is available. In this mode, the license plate type is automatically selected from the countries enabled in the session options.
 
-#### Factory methods and memory ownership
+The list of the supported countries and their codes in the system is presented in the table.
+|                                   Country  |                           Country Code   |          Auto Selection  |
+|:-------------------------------------------|:----------------------------------------:|:------------------------:|
+| `Armenia`                                  | `arm`                                    |            yes           |
+| `Azerbaijan`                               | `aze`                                    |            yes           |
+| `Belarus`                                  | `blr`                                    |            yes           |
+| `Georgia`                                  | `geo`                                    |            yes           |
+| `Germany`                                  | `deu`                                    |            yes           |
+| `France`                                   | `fra`                                    |            yes           |
+| `Italy`                                    | `ita`                                    |            yes           |
+| `Kazakhstan`                               | `kz`                                     |            yes           |
+| `Kyrgyzstan`                               | `kgz`                                    |            yes           |
+| `Moldova`                                  | `mda`                                    |            yes           |
+| `Russian Federation`                       | `rus`                                    |            yes           |
+| `Tajikistan`                               | `tjk`                                    |            yes           |
+| `United Arab Emirates`                     | `are`                                    |            no            |
+| `Uzbekistan`                               | `uzb`                                    |            yes           |
+
+"yes" in the **Auto Selection** column means that the auto selection mode is supported for the corresponding country.
+
+### Factory Methods and Memory Ownership
 
 Several Smart Code Engine SDK classes have factory methods which return pointers to heap-allocated objects.  **Caller is responsible for deleting** such objects _(a caller is probably the one who is reading this right now)_.
 We recommend using `std::unique_ptr<T>` for simple memory management and avoiding memory leaks.
 
 In Java API for the objects which are no longer needed it is recommended to use `.delete()` method to force the deallocation of the native heap memory.
 
-## Session options
+### Session Options
 
 Some configuration bundle options can be overriden in runtime using `CodeEngineSessionSettings` methods. You can obtain all currently set option names and their values using the following procedure:
 
@@ -648,16 +669,22 @@ settings.SetOption("barcode.COMMON.enabled", "true");
 
 Option values are always represented as strings, so if you want to pass an integer or boolean it should be converted to string first.
 
-#### Global options
-|                     Option name |                         Value type |                                           Default | Description                                                                                                                                                                         |
-|--------------------------------:|-------------------------------------:|----------------------------------------------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+#### Global Options
+|Option name             |                         Value type |                                           Default | Description                                                                                                                                                                         |
+--------------------------------|-------------------------------------|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `global.enableMultiThreading`   | `"true"` or `"false"`                | true                                                | Enables parallel execution of internal algorithms                          |
 | `global.rgbPixelFormat`         | String of characters R, G, B, and A  | RGB for 3-channel images, BGRA for 4-channel images | Sequence of color channels for session.ProcessSnapshot() method image interpretation |
-| `global.sessionTimeout`         | Double value                         | `0.0` for server bundles, `5.0` for mobile bundles  | Session timeout in seconds                          |
+| `global.sessionTimeout`         | Double value                         | `0.0` for server bundles, `5.0` for mobile bundles  | Session timeout in seconds                                 |
 | `global.allowSpawnSessionWithoutEngines`| `"true"` or `"false"` | false | Allows to spawn a session without enabling any internal engines                        |
+| `global.universalPay.collectNonPaymentBarcodes`| `"true"` or `"false"` | false | Defines the addition of non-payment barcodes to the result during universalPay workflow                        |
 
+### Exceptions
 
-## Processing Feedback
+Our C++ API may throw `se::common::BaseException` subclasses when user passes invalid input, makes bad state calls or if something else goes wrong. Most exceptions contain useful human-readable information. Please read `e.what()` message if exception is thrown. Note that `se::common::BaseException` is **not** a subclass of `std::exception`, an Smart Code Engine interface in general do not have any dependency on the STL.
+
+The thrown exceptions are wrapped in general `java.lang.Exception`, so in Java API do catch those.
+
+### Processing Feedback
 
 Smart Code Engine SDK supports optional callbacks during document analysis and recognition process before the `Process(...)` method is finished.
 It allows the user to be more informed about the underlying recognition process and also helps creating more interactive GUI.
@@ -716,7 +743,7 @@ CodeEngineSession session = engine.SpawnSession(settings, signature, my_workflow
 
 **Important!** Your `CodeEngineWorkflowFeedback` and `CodeEngineVisualizationFeedback` subclasses instance must not be deleted while `CodeEngineSession` is alive. We recommend to place them in the same scope. For explanation of signatures, [see above](#warning-personalized-signature-warning).
 
-## Java API Specifics
+### Java API Specifics
 
 Smart Code Engine SDK has Java API which is automatically generated from C++ interface by SWIG tool.
 
@@ -724,7 +751,7 @@ Java interface is the same as C++ except minor differences, please see the provi
 
 There are several drawbacks related to Java memory management that you need to consider.
 
-#### Object deallocation
+#### Object Deallocation
 
 Even though garbage collection is present and works, it's strongly advised to manually call `obj.delete()` functions for our API objects because they are wrappers to the heap-allocated memory and their heap size is unknown to the garbage collector.
 
@@ -740,7 +767,7 @@ This is important because from garbage collector's point of view these objects o
 
 You don't want such objects to remain in your memory when they are no longer needed so call `obj.delete()` manually.
 
-#### Feedback scope
+#### Feedback Scope
 
 When using optional callbacks by subclassing `CodeEngineWorkflowFeedback` or `CodeEngineVisualizationFeedback` please make sure that its instance have the same scope as `CodeEngineSession`. The reason for this is that our API does not own the pointer to the feedback instance which cause premature garbage collection resulting in crash:
 
@@ -777,4 +804,32 @@ class MyRecognizer {
 }
 ```
 
-For explanation of signatures, [see above](#warning-personalized-signature-warning).
+## PDF Recognition
+
+For server recognition, PDF files are supported as an input format. PDF support is implemented via preliminary conversion of PDF documents into raster images (e.g. PNG), which are then passed to the recognition pipeline.
+
+PDF-to-raster conversion can be performed using the open-source **PDFium** library via the `pdfium_cli` command-line utility.
+
+>The PDF conversion utility is given upon demand in order to reduce the size of the SDK distribution.
+
+Upon customer request, a ready-to-use PDF-to-raster conversion utility can be provided for a specific target architecture.
+
+| Option         | Description                                      | Default  |Required|
+|----------------|--------------------------------------------------|----------|--------|
+| -i, --input    | Path to the input PDF file                       | —        | Yes    |
+| -o, --output   | The directory for PNG images                     | `result` |        |
+| -d, --dpi      | Resolution (DPI)                                 | `300`    |        |
+| -r, --pages    | Pages, e.g. "1-3,5,7" or "all"                   | `all`    |        |
+| -p, --prefix   | Prefix name for the output files                 | `page_`  |        |
+| -g, --grayscale| Render pages in grayscale (smaller PNG file size)| —        |        |
+| -h, --help     | Help                                             | —        |        |
+
+Examples:
+
+```shell
+./pdfium_cli -i file.pdf
+```
+
+```shell
+./pdfium_cli -i file.pdf -o out -d 150 -r 1-5
+```
